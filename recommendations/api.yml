@@ -1,0 +1,150 @@
+#Test with: http://editor.swagger.io/
+
+swagger: '2.0'
+info:
+  version: 1.0.0
+  title: Microservice for recomendatios
+  description: Python + PostgreSQL
+  license:
+    name: unTube, 2019-I
+host: 192.168.99.103:8000
+basePath: /recommendations
+schemes:
+  - http
+consumes:
+  - application/json
+produces:
+  - application/json
+paths:
+  /feedUser:
+    post:
+      summary: Feeds the user preferences DB
+      operationId: feedDbUser
+      parameters:
+        - name: UserPreferences
+          in: body
+          required: true
+          description: User_id and Category_id
+          schema:
+            $ref: '#/definitions/feedInput'
+      responses:
+        '201':
+          description: DB feeded
+        '400':
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/ErrorModel'
+        '500':
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/ErrorModel'
+   
+  /{video}/{category}/{score}/feedVideo:
+    post:
+      summary: Feeds the videos statistics DB
+      operationId: feedDbVideo
+      parameters:
+        - name: video
+          in: path
+          description: The id of the video
+          required: true
+          type: integer
+          
+        - name: category
+          in: path
+          description: The id of the category
+          required: true
+          type: integer
+        
+        - name: score
+          in: path
+          description: The score given to the video
+          required: true
+          type: integer
+      responses:
+        '201':
+          description: DB feeded
+
+        '400':
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/ErrorModel'
+
+        '500':
+          description: unexpected error
+          schema:
+            $ref: '#/definitions/ErrorModel'
+
+  /{user}/recommend:
+    get:
+      summary: Returns a list o video ids
+      operationId: searchRecommendations
+      parameters:
+        - name: user
+          in: path
+          description: The id of the user for search recommendations
+          required: true
+          type: integer
+      responses:
+        '200':
+          description: Ok
+          schema:
+            $ref: '#/definitions/CoursesList'
+        '406':
+          description: Not Acceptable (Invalid Params)
+          schema:
+            $ref: '#/definitions/ErrorModel'
+        '500':
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/ErrorModel'
+        '404':
+          description: Not Found
+          schema:
+            $ref: '#/definitions/ErrorModel'
+        
+
+
+definitions:
+
+  # videos
+  Videos:
+    type: object
+    properties:
+      id:
+        type: integer
+    
+  feedInput:
+    type: object
+    properties:
+      user:
+        type: integer
+      category:
+        type: integer
+
+  CoursesList:
+    type: object
+    required:
+      - total
+      - list
+    properties:
+      total:
+        type: number
+      list:
+        type: array
+        items:
+          $ref: '#/definitions/Videos'
+
+# Errors
+  ErrorModel:
+    type: object
+    required:
+      - message
+      - code
+    properties:
+      message:
+        type: string
+      code:
+        type: number
+      description:
+        type: object

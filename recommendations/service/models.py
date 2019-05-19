@@ -4,9 +4,10 @@ from django.db import models
 class UserPreferences(models.Model):
     id_user = models.IntegerField(null=False)
     id_category = models.IntegerField(null=False)
-    counter = models.IntegerField(default=0)
+    counter = models.IntegerField(default=1)
 class VideoStatistics(models.Model):
     id_video = models.IntegerField(null=False)
     id_category = models.IntegerField(null=False)
-    calification = models.IntegerField(default=0)
+    sumCalification = models.IntegerField(default=0)
+    calicationsCount = models.IntegerField(default=1)
     num_views = models.IntegerField(default=1)

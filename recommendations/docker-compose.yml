@@ -5,8 +5,8 @@ services:
     image: postgres
   recommendations-ms:
     build: .
-    command: bash -c "python3 manage.py makemigrations && python3 manage.py migrate && python3 manage.py runserver 0.0.0.0:8000"
+    command: bash -c "python3 manage.py makemigrations && python3 manage.py migrate && python3 manage.py runserver 0.0.0.0:3003"
     ports:
-      - "8000:8000"
+      - "3003:3003"
     depends_on:
       - recommendations-db

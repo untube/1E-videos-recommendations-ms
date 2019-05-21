@@ -7,6 +7,7 @@ from django.views.decorators.csrf import csrf_exempt
 import json
 
 
+
 @csrf_exempt 
 
 # Create your views here.
@@ -37,8 +38,8 @@ def feedDbUser(request):
         temp[0].save()
         response = "Data update"
     
-    #return HttpResponse(response)
-    return
+    return HttpResponse(response)
+    
 @csrf_exempt 
 def feedDbVideo(request):
     response = ""
@@ -47,7 +48,7 @@ def feedDbVideo(request):
         try:
             video_id = json_data['id_video']
             category_id = json_data['id_category']
-            score = json_data['score']
+            score = json_data['calification']
         
         except KeyError:
             return HttpResponse("Malformed data!")
@@ -72,8 +73,8 @@ def feedDbVideo(request):
         temp[0].save()
         response = "Data update"
 
-    #return HttpResponse(response)
-    return
+    return HttpResponse(response)
+    
 
 def searchRecommendations(request, user_id):
     response = ""
@@ -93,18 +94,22 @@ def searchRecommendations(request, user_id):
             heapq.heapify(recomendations)
             for j in range(len(categories)):
                 categorie = heapq.heappop(categories)
-                print(categorie[1])
+                
                 temp = VideoStatistics.objects.filter(id_category = categorie[1])
                 if len(temp) > 0:
                     for register in temp:
                         promedio = (register.sumCalification / register.calicationsCount) /  register.num_views
-                        heapq.heappush(recomendations, (((-1) * promedio), ((-1) * register.num_views), register.id_video))
+                        heapq.heappush(recomendations, (((-1) * promedio), ((-1) * register.num_views), register))
         if len(recomendations) > 0:
             temp_list = []
             while recomendations:
-                temp_list.append(heapq.heappop(recomendations)[2])
+                #temp_list.append(heapq.heappop(recomendations)[2].id_video)
+                temp_list.append(heapq.heappop(recomendations))
             
-            response = "{}".format(temp_list)
+            #response = "{}".format(temp_list)
+            #response = {dato[2].id_video: dato[2].id_video for dato in temp_list}
+            response = iter(temp_list)
+            print("lista de ids  {}".format(response))
 
     return HttpResponse(response)
     

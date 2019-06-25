@@ -6,7 +6,7 @@ class UserPreferences(models.Model):
     id_category = models.IntegerField(null=False)
     counter = models.IntegerField(default=1)
 class VideoStatistics(models.Model):
-    id_video = models.CharField(null=False, max_length=200)
+    id_video = models.CharField(max_length=50, null=False)
     id_category = models.IntegerField(null=False)
     sumCalification = models.IntegerField(default=0)
     calicationsCount = models.IntegerField(default=1)

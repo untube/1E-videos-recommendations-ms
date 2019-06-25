@@ -104,9 +104,9 @@ def searchRecommendations(request, user_id):
         if len(recomendations) > 0:
             temp_list = []
             while recomendations:
-                temp_list.append(heapq.heappop(recomendations)[2].id_video)
+                temp_list.append({'id': heapq.heappop(recomendations)[2].id_video})
                
-            response = {"ids": temp_list}
+            response = temp_list
 
             print("lista de ids  {}".format(response))
 

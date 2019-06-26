@@ -5,3 +5,4 @@ FROM python:3
  ADD requirements.txt /sa_1E_recommendations_ms/
  RUN pip3 install -r requirements.txt
  ADD . /sa_1E_recommendations_ms/
+ EXPOSE 3003

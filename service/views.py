@@ -9,6 +9,7 @@ from django.http import JsonResponse
 
 
 
+
 @csrf_exempt 
 
 # Create your views here.
@@ -100,16 +101,15 @@ def searchRecommendations(request, user_id):
                 if len(temp) > 0:
                     for register in temp:
                         promedio = (register.sumCalification / register.calicationsCount) /  register.num_views
-                        heapq.heappush(recomendations, (((-1) * promedio), ((-1) * register.num_views), register))
+                        heapq.heappush(recomendations, (((-1) * promedio), ((-1) * register.num_views),id(register), register ))
         if len(recomendations) > 0:
             temp_list = []
             while recomendations:
-                temp_list.append({'id': heapq.heappop(recomendations)[2].id_video})
+                temp_list.append({'id': heapq.heappop(recomendations)[3].id_video})
+                # temp_list.append({'id_v': str(heapq.heappop(recomendations)[3].id_video)})
                
-            response = temp_list
-
             print("lista de ids  {}".format(response))
 
-    #return HttpResponse(response)
-    return JsonResponse(response)
+    return JsonResponse(temp_list, safe=False)
+
     

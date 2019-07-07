@@ -84,31 +84,31 @@ def searchRecommendations(request, user_id):
     temp = UserPreferences.objects.filter(id_user = user_id)
     
     if len(temp) == 0:
-        response = "There are no recommendations"
-    else:
-        categories = []
-        heapq.heapify(categories)
-        for i in range(len(temp)):
-            heapq.heappush(categories,(((-1)*temp[i].counter), temp[i].id_category ))
+        temp = UserPreferences.objects.filter(id_user = 1)
 
-        if len(categories) > 0:
-            recomendations = []
-            heapq.heapify(recomendations)
-            for j in range(len(categories)):
-                categorie = heapq.heappop(categories)
-                
-                temp = VideoStatistics.objects.filter(id_category = categorie[1])
-                if len(temp) > 0:
-                    for register in temp:
-                        promedio = (register.sumCalification / register.calicationsCount) /  register.num_views
-                        heapq.heappush(recomendations, (((-1) * promedio), ((-1) * register.num_views),id(register), register ))
-        if len(recomendations) > 0:
-            temp_list = []
-            while recomendations:
-                temp_list.append({'id': heapq.heappop(recomendations)[3].id_video})
-                # temp_list.append({'id_v': str(heapq.heappop(recomendations)[3].id_video)})
-               
-            print("lista de ids  {}".format(response))
+    categories = []
+    heapq.heapify(categories)
+    for i in range(len(temp)):
+        heapq.heappush(categories,(((-1)*temp[i].counter), temp[i].id_category ))
+
+    if len(categories) > 0:
+        recomendations = []
+        heapq.heapify(recomendations)
+        for j in range(len(categories)):
+            categorie = heapq.heappop(categories)
+            
+            temp = VideoStatistics.objects.filter(id_category = categorie[1])
+            if len(temp) > 0:
+                for register in temp:
+                    promedio = (register.sumCalification / register.calicationsCount) /  register.num_views
+                    heapq.heappush(recomendations, (((-1) * promedio), ((-1) * register.num_views),id(register), register ))
+    if len(recomendations) > 0:
+        temp_list = []
+        while recomendations:
+            temp_list.append({'id': heapq.heappop(recomendations)[3].id_video})
+            # temp_list.append({'id_v': str(heapq.heappop(recomendations)[3].id_video)})
+            
+        print("lista de ids  {}".format(response))
 
     return JsonResponse(temp_list, safe=False)
 

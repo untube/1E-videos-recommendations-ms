@@ -55,8 +55,6 @@ def feedDbVideo(request):
         except KeyError:
             return HttpResponse("Malformed data!")
 
-    
-
     temp = VideoStatistics.objects.filter(id_video = video_id).filter(id_category = category_id)
     if len(temp) == 0:
         user = VideoStatistics(id_video = video_id, id_category = category_id, sumCalification = score)
@@ -76,7 +74,42 @@ def feedDbVideo(request):
         response = "Data update"
 
     return HttpResponse(response)
+
+
+@csrf_exempt 
+def purgeDbVideo(request):
+    response = ""
+    if request.method == 'POST':
+        json_data = json.loads(request.body) # request.raw_post_data w/ Django < 1.4
+        try:
+            video_id = json_data['id_video']
+        
+        except KeyError:
+            return HttpResponse("Malformed data!")
+
+        VideoStatistics.objects.filter(id_video = video_id).delete()
     
+        response = "Data update"
+    return HttpResponse(response)
+
+
+@csrf_exempt 
+def purgeDbUser(request):
+    response = ""
+    if request.method == 'POST':
+        json_data = json.loads(request.body) # request.raw_post_data w/ Django < 1.4
+        try:
+            user_id = json_data['id_user']
+        
+        except KeyError:
+            return HttpResponse("Malformed data!")
+
+        UserPreferences.objects.filter(id_user = user_id).delete()
+    
+        response = "Data update"
+    return HttpResponse(response)
+
+
 
 def searchRecommendations(request, user_id):
     response = ""
